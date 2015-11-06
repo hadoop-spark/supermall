@@ -1,0 +1,193 @@
+<%@ page language="java" import="java.util.*" pageEncoding="GBK"%>
+<%@ page import="com.shopping.vo.*"%>
+<%@ page import="com.shopping.service.*"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+	<link href="style/common.css" rel="stylesheet" type="text/css" />
+	<link href="style/o_top.css" rel="stylesheet" type="text/css" />
+	
+	<script type="text/javascript" language="javascript" src="resource/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" language="javascript">
+	var timer;
+	var ms = 300;
+	$(document).ready(function(){
+		function closeClassify(){
+			$("#product-classify .item .i-mc").each(function(){
+				$(this).css("display","none");
+			});
+			$("#product-classify .item span h3").each(function(){
+				$(this).removeClass("over").addClass("i-classify");
+			});
+		}
+		//timer = setInterval(closeClassify,ms);
+		//展开购物车
+		$("#shopping-cart dl").mouseover(function(){
+			$(this).children(".cart-dt").removeClass("cart-dt").addClass("cart-dt-over");
+			$("#shopping-cart dl dd").css("display","block");
+		});	
+		$("#shopping-cart dl").mouseleave(function(){
+			$(this).children(".cart-dt-over").removeClass("cart-dt-over").addClass("cart-dt");
+			$("#shopping-cart dl dd").css("display","none");
+		});	
+		//展开全部商品分类
+		$("#arrow").click(function(){
+			$("#categorys .mc").toggle();
+		});
+		//展开商品子分类
+		$("#product-classify .item span h3").mouseover(function(){
+			clearTimeout(timer);
+			$("#product-classify .item .i-mc").each(function(){
+				$(this).css("display","none");
+			});
+			$("#product-classify .item span h3").each(function(){
+				$(this).removeClass("over").addClass("i-classify");
+			});
+			$(this).removeClass("i-classify").addClass("over");
+			$(this).parent().next().css("display","block");	
+		});
+		$("#product-classify .item span h3").mouseout(function(){
+			timer = setTimeout(closeClassify,ms);
+		});
+		$("#product-classify .item .i-mc").mouseover(function(){
+			clearTimeout(timer);
+		});
+		$("#product-classify .item .i-mc").mouseout(function(){
+			timer = setTimeout(closeClassify,ms);
+		});
+		
+	});
+	</script>
+
+    <!-- 快捷栏begin -->
+<div id="shortcut">
+	<div class="w">
+    	<ul class="fl oh">
+        	<li class="fore1 fl"><b></b><a href="javascript: return false;" onclick='window.external.AddFavorite("<%=basePath + "page/main/home.jsp" %>","极目商城");'>收藏极目商城</a></li>
+        </ul>
+        <ul class="fr oh">
+       	<%
+       	Object top_obj = session.getAttribute("curr_user");
+       	if(top_obj != null && top_obj instanceof com.shopping.vo.User){
+       		com.shopping.vo.User top_currUser = (com.shopping.vo.User)top_obj;
+       	%>
+       		<li class="fore1 fl"><%=top_currUser.getName() %>,欢迎来到极目商城！<a href="user/LogoutServlet">[退出]</a></li>
+       	<%
+       	} else {
+       	 %>
+        	<li class="fore1 fl">欢迎来到极目商城！<a href="page/user/login.jsp">[登陆]</a>&nbsp;&nbsp;<a href="page/user/regist.jsp">[免费注册]</a></li>
+        <%} %>
+        	<li class="fore2 fl"><a href="page/user/mycart.jsp">我的购物车</a></li>
+            <li class="fore2 fl"><a href="page/user/myOrders.jsp">我的订单</a></li>
+            <li class="fore2 fl"><a href="#">在线客服</a></li>
+        </ul>
+        <div class="clr"></div>
+    </div>
+</div>
+<!-- 快捷栏end -->
+<!-- 头部begin -->
+<div id="o-header">
+	<div class="w" id="header">
+    	<div class="fl" id="logo"><a href="page/main/home.jsp"><img src="images/logo.png" /></a></div>
+        <div class="fl" id="search">
+        	<div class="i-search">
+            	<b class="l-border"></b>
+                <b class="r-border"></b>
+            	<div class="form">
+                	<input class="text" type="text" value="扩展功能，有待完善" />
+                    <input class="button" type="button" value="搜 索" />
+                </div>
+            </div>
+            <div id="hotwords">热卖商品：
+            	<marquee width="440px" heigth="18px" direction="left" behavior="scroll" width="100%" onmouseout="this.start()" onmouseover="this.stop()" scrollamount="3">
+            		<%
+            		ProductService proService = new ProductService();
+            		List<Product> pro = proService.getHotProduct();
+            		if (pro != null) {
+            			request.setAttribute("pros",pro);
+            		}
+            		 %>
+            		<c:forEach items="${requestScope.pros }" var="pro">
+            		<a href="page/shopping/productDetial.jsp?proid=${pro.productid }">${pro.productname }</a>&nbsp;
+            		</c:forEach>
+            	</marquee>
+            </div>
+        </div>
+        <div id="shopping-cart">
+        	<dl>
+            	<dt id="cart-dt" class="cart-dt">
+                	<a href="page/user/userinfo.jsp">我的极目</a>
+                    <b></b>
+                </dt>
+                <dd>
+                	<div class="prompt">
+                    	<div class="loading">扩展功能，有待完善</div>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <%
+    List<SuperType> supTypes = (List<SuperType>)session.getAttribute("supTypes");
+    if (supTypes == null) {
+    	supTypes = new TypeService().loadAllType();
+    	session.setAttribute("supTypes",supTypes);
+    }
+     %>
+    <div class="w">
+    	<div id="nav">
+        	<div class="hover" id="categorys">
+            	<div class="mt ld">
+                	<h2>
+                    	<span>全部商品分类</span>
+                        <b id="arrow"></b>
+                    </h2>
+                </div>
+                <div class="mc" id="product-classify">
+                	<!-- 列表项循环开始 -->
+                	<c:forEach items="${sessionScope.supTypes }" var="supType">
+                	<div class="item">
+                    	<span>
+                        	<h3 class="i-classify">
+                            	${supType.typename }
+                         	</h3>
+                            <s></s>
+                        </span>
+                        <div class="i-mc">
+                        	<div class="subItem">
+                            	<ul>
+                                	<!-- 子列表项循环开始 -->
+                                	<c:if test="${fn:length(supType.subtypes) == 0 }">
+                                		<li>暂无</li>
+                                	</c:if>
+                                	<c:if test="${fn:length(supType.subtypes) > 0 }">
+	                                	<c:forEach items="${supType.subtypes }" var="subType">
+	                                	<li><a href="shopping/ProductListServlet?subtype=${subType.subtypeid }">${subType.subtypename }</a></li>
+	                                	</c:forEach>
+                                	</c:if>
+                                    <!-- 子列表项循环结束 -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    </c:forEach>
+                    <!-- 列表项结束 -->
+                </div>
+            </div>
+            <div id="nav-r"></div>
+            <ul id="navitems">
+            	<li class="curr" id="nav-home">
+                	<a href="">首页</a>
+                </li>
+                <li id="nav-mall">
+                	<a href="">服装城</a>
+                </li>
+                <li id="nav-tuan">
+                	<a href="">团购</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 头部end -->
+

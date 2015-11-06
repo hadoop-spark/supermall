@@ -1,0 +1,184 @@
+<%@ page language="java" import="java.util.*,com.common.*" pageEncoding="GBK"%>
+<%@page import="java.text.DecimalFormat"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+String proid = request.getParameter("proid");
+if (proid == null || proid.equals("")) {
+	response.sendRedirect(basePath + "page/main/home.jsp");
+	return;
+}
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>My JSP 'productlist.jsp' starting page</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="stylesheet" type="text/css" href="style/base.css" />
+	-->
+	<link href="style/common.css" rel="stylesheet" type="text/css" />
+	<link href="style/details.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" language="javascript" src="resource/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" language="javascript">
+		$(document).ready(function(){
+			$(".btn-reduce").click(function(){
+				var num = $("#buy-num").val();
+				if (num <= 1) {
+					num = 1
+				} else {
+					num--;
+				}
+				$("#buy-num").val(num);
+			});
+			$(".btn-add").click(function(){
+				var num = $("#buy-num").val();
+				num++;
+				$("#buy-num").val(num);
+			});
+			$("a#InitCartUrl").click(function(){
+				var pid = $("#proid").val();
+				var pnum = $("#buy-num").val();
+				$.post("shopping/AddProductToCartServlet",{proid:pid,pronum:pnum},function(data){
+					alert(data);
+				});
+			});
+		});
+	</script>
+  </head>
+  
+  <body>
+    <%@ include file="../common/o_top.jsp" %>
+    <div class="root61">
+<div class="w">
+	<%
+	Product proDetail = new ProductService().getProductById(Integer.parseInt(proid));
+	if (proDetail != null) {
+		request.setAttribute("proDetail",proDetail);
+	} else {
+		out.println("<script type='text/javascript' language='javascript'>");
+		out.println("alert('没有该商品的信息！');");
+		out.println("location.href='"+basePath+"page/main/home.jsp';");
+		out.println("</script>");
+		return;
+	}
+	 %>
+	<div id="product-intro" >
+		<div id="name">
+			<h1>${requestScope.proDetail.productname }</h1>
+		</div><!--name end-->
+		<div class="clearfix">
+			<ul id="summary">
+				<li id="summary-grade">
+					<div class="dt">品&nbsp;&nbsp;牌：</div>
+					<div class="dd">
+						<span class="sa0">${requestScope.proDetail.brandObj.brandname }</span>
+					</div>
+				</li><!-- 商品品牌-->
+                 <li id="summary-price">
+					<div class="dt">定&nbsp;&nbsp;价：</div>
+					<div class="dd">
+						<font style="font-size:14px; color:#666; text-decoration:line-through;">￥<fmt:formatNumber value="${requestScope.proDetail.price }" pattern=".00" ></fmt:formatNumber></font>					
+					</div>
+				</li>	
+                 <li id="summary-price">
+					<div class="dt">极&nbsp;目&nbsp;价：</div>
+					<div class="dd">
+						<strong class="p-price" style="font-size:22px;">￥<fmt:formatNumber value="${requestScope.proDetail.nowprice }" pattern=".00" /></strong>					
+					</div>
+				</li>	
+                <li id="summary-price">
+					<div class="dt">为您节省：</div>
+					<div class="dd">
+						<font class="p-price" style="font-size:14px;">￥<fmt:formatNumber value="${requestScope.proDetail.price - requestScope.proDetail.nowprice }" pattern=".00" /></font>					
+					</div>
+				</li>			
+				<li id="summary-grade">
+					<div class="dt">上架时间：</div>
+					<div class="dd">
+						<fmt:formatDate value="${requestScope.proDetail.intime }" pattern="yyyy-MM-dd HH:mm:ss" />
+					</div>
+				</li><!-- 商品评分-->			
+			</ul><!--summary end-->		
+			<ul id="choose" clstag="shangpin|keycount|product|choose">
+				<input type="hidden" id="proid" value="<%=proid %>" />			
+				<li id="choose-amount">
+					<div class="dt">购买数量：</div>
+					<div class="dd">
+						<div class="wrap-input">
+								<a class="btn-reduce" href="javascript:return false;">减少数量</a>
+								<a class="btn-add" href="javascript:return false;">增加数量</a>
+								<input class="text" id="buy-num" value="1" class="text"/>
+						</div>
+					</div>
+				</li>		      
+				<li id="choose-btns">
+					<div id="choose-btn-append"  class="btn">
+							<a class="btn-append " id="InitCartUrl" href="javascript:return false;" >加入购物车<b></b></a>
+					</div>
+				</li>
+			</ul><!--choose end-->
+			<span class="clr"></span>
+		</div>	<!--clearfix end-->	
+		<div id="preview">
+			<div id="spec-n1">
+				<img width="350" height="350" src="<%=IConstant.IMG_PATH + proDetail.getPicture() %>" alt="${requestScope.proDetail.productname }"/>
+			</div>		
+		</div><!--preview end-->
+	</div><!--product-intro end-->
+</div>
+
+<div class="w">
+		<div id="product-detail" class="m m1">
+			<div class="float-nav-wrap" style="height:31px;">
+                <div class="mt" style="height: 31px;">
+                    <ul class="tab">
+                        <li class="curr"><div href="javascript:;" class="title">商品介绍</div></li>
+                    </ul>				
+                </div>
+            </div><!--float-nav-wrap end-->
+            <div class="mc">
+                <ul class="detail-list">
+                	<c:forEach items="${requestScope.proDetail.attrs }" var="attr">
+                        <li>${attr.attrname }：${attr.attrvalue }</li>
+                    </c:forEach>
+                </ul>
+        	</div>
+            <div class="float-nav-wrap" style="height:31px; margin-top:10px;">
+                <div class="mt" style="height: 31px;">
+                    <ul class="tab">
+                        <li class="curr"><div href="javascript:;" class="title">全部评价</div></li>
+                    </ul>				
+                </div>
+       	    </div><!--float-nav-wrap end-->
+       	    <%
+       	    List<Comment> cmt = new CommentService().getCommentsByProductID(Integer.parseInt(proid));
+       	    request.setAttribute("proCmt",cmt);
+       	     %>
+       	    <c:forEach items="${requestScope.proCmt }" var="cmt">
+            <div class="d_comment">
+            	<div class="d_comment_title"><span class="fl user">${cmt.username }：</span><span class="content">${cmt.ctitle }</span><span class="fr date"><fmt:formatDate value="${cmt.cdate }" pattern="yyyy-MM-dd HH:mm"/></div>
+                <div style="clear:both"></div>
+                <div class="d_comment_content">${cmt.content }</div>
+            </div>
+            </c:forEach>
+		</div><!--product-detail end-->
+        
+        
+</div>
+</div>
+    <%@ include file="../common/o_foot.jsp" %>
+  </body>
+</html>

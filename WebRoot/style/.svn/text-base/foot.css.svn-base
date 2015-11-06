@@ -1,0 +1,6 @@
+.l_w{width:990px; margin:0px auto; zoom:1; padding:0px;}
+#footer { padding-bottom:30px; text-align:center; }
+#footer .links a, #footer .links span { margin:0 10px; }
+#footer .links span a { margin:0; }
+#footer .copyright { margin:10px 0; }
+#footer .authentication a { margin:0 5px; }

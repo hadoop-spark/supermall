@@ -1,0 +1,9 @@
+.myjm_left { width:150px; margin-right:10px; float:left;}
+.m#myjm { overflow:hidden;}
+#myjm .mt { height:32px; color:#fff; line-height:32px; padding:0px 6px; background:url(../images/index.png) no-repeat; background-color:rgb(158,0,0);}
+#myjm .mt h2 { font-size:14px; height:auto; line-height:32px; padding-top:0px; float:left; color:#fff;}
+#myjm .mc { overflow:hidden; border-top:0px #e6e6e6 solid; border-right:1px #e6e6e6 solid; border-bottom:1px #e6e6e6 solid; border-left:1px #e6e6e6 solid;}
+#myjm dl dt { height:27px; line-height:27px; padding:0px 12px; font-weight:bold; margin-bottom:-1px; border:1px #e6e6e6 solid; position:relative; cursor:pointer; background:rgb(230,230,230);}
+#myjm dl dd { padding:4px 0px 5px 0px;}
+#myjm dd .myjm_item { padding:2px 0px 2px 24px;}
+

@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+body {
+
+}
+* {
+	font-size: 13px;
+}
+input{
+	border: solid 1px #cadcb2;
+}
+
+<style> 
+    .nobr br{display:none}   
+</style>

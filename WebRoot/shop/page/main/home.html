@@ -1,0 +1,389 @@
+<%@ page language="java" import="java.util.*,java.text.*" pageEncoding="GBK"%>
+<%@ page import="com.shopping.vo.*"%>
+<%@ page import="com.shopping.service.*"%>
+<%@ page import="com.common.*"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <base href="<%=basePath%>">
+    
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+	<title>极目商城</title> 
+	<link href="style/common.css" rel="stylesheet" type="text/css" />
+	<link href="style/home.css" rel="stylesheet" type="text/css" />
+	<style type="text/css">
+	
+	</style>
+	<script type="text/javascript" language="javascript" src="resource/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" language="javascript">
+	var timer;
+	var ms = 300;
+	$(document).ready(function(){
+		function closeClassify(){
+			$("#product-classify .item .i-mc").each(function(){
+				$(this).css("display","none");
+			});
+			$("#product-classify .item span h3").each(function(){
+				$(this).removeClass("over").addClass("i-classify");
+			});
+		}
+		//timer = setInterval(closeClassify,ms);
+		//展开购物车
+		$("#shopping-cart dl").mouseover(function(){
+			$(this).children(".cart-dt").removeClass("cart-dt").addClass("cart-dt-over");
+			$("#shopping-cart dl dd").css("display","block");
+		});	
+		$("#shopping-cart dl").mouseleave(function(){
+			$(this).children(".cart-dt-over").removeClass("cart-dt-over").addClass("cart-dt");
+			$("#shopping-cart dl dd").css("display","none");
+		});	
+		//展开全部商品分类
+		$("#product-classify .item span h3").mouseover(function(){
+			clearTimeout(timer);
+			$("#product-classify .item .i-mc").each(function(){
+				$(this).css("display","none");
+			});
+			$("#product-classify .item span h3").each(function(){
+				$(this).removeClass("over").addClass("i-classify");
+			});
+			$(this).removeClass("i-classify").addClass("over");
+			$(this).parent().next().css("display","block");	
+		});
+		$("#product-classify .item span h3").mouseout(function(){
+			timer = setTimeout(closeClassify,ms);
+		});
+		$("#product-classify .item .i-mc").mouseover(function(){
+			clearTimeout(timer);
+		});
+		$("#product-classify .item .i-mc").mouseout(function(){
+			timer = setTimeout(closeClassify,ms);
+		});
+		
+	});
+</script>
+  </head>
+  
+  <body>
+    <!-- 快捷栏begin -->
+<div id="shortcut">
+	<div class="w">
+    	<ul class="fl oh">
+        	<li class="fore1 fl"><b></b><a href="javascript: return false;" onclick='window.external.AddFavorite("<%=basePath + "page/main/home.jsp" %>","极目商城");'>收藏极目商城</a></li>
+        </ul>
+        <ul class="fr oh">
+        	<%
+	       	Object top_obj = session.getAttribute("curr_user");
+	       	if(top_obj != null && top_obj instanceof com.shopping.vo.User){
+	       		com.shopping.vo.User top_currUser = (com.shopping.vo.User)top_obj;
+	       	%>
+	       		<li class="fore1 fl"><%=top_currUser.getName() %>,欢迎来到极目商城！<a href="user/LogoutServlet">[退出]</a></li>
+	       	<%
+	       	} else {
+	       	 %>
+	        	<li class="fore1 fl">欢迎来到极目商城！<a href="page/user/login.jsp">[登陆]</a>&nbsp;&nbsp;<a href="page/user/regist.jsp">[免费注册]</a></li>
+	        <%} %>
+        	<li class="fore2 fl"><a href="page/user/mycart.jsp">我的购物车</a></li>
+            <li class="fore2 fl"><a href="page/user/myOrders.jsp">我的订单</a></li>
+            <li class="fore2 fl"><a href="#">在线客服</a></li>
+        </ul>
+        <div class="clr"></div>
+    </div>
+</div>
+<!-- 快捷栏end -->
+<!-- 头部begin -->
+<div id="o-header">
+	<div class="w" id="header">
+    	<div class="fl" id="logo"><a href="page/main/home.jsp"><img src="images/logo.png" /></a></div>
+        <div class="fl" id="search">
+        	<div class="i-search">
+            	<b class="l-border"></b>
+                <b class="r-border"></b>
+            	<div class="form">
+                	<input class="text" type="text" value="扩展功能，有待完善" />
+                    <input class="button" type="button" value="搜 索" />
+                </div>
+            </div>
+            <div id="hotwords">热卖商品：
+            	<marquee width="440px" heigth="18px" direction="left" behavior="scroll" width="100%" onmouseout="this.start()" onmouseover="this.stop()" scrollamount="3">
+            		<%
+            		ProductService proService = new ProductService();
+            		List<Product> pro = proService.getHotProduct();
+            		if (pro != null) {
+            			request.setAttribute("pros",pro);
+            		}
+            		 %>
+            		<c:forEach items="${requestScope.pros }" var="pro">
+            		<a href="page/shopping/productDetial.jsp?proid=${pro.productid }">${pro.productname }</a>&nbsp;
+            		</c:forEach>
+            	</marquee>
+            </div>
+        </div>
+        <div id="shopping-cart">
+        	<dl>
+            	<dt id="cart-dt" class="cart-dt">
+                	<a href="page/user/userinfo.jsp">我的极目</a>
+                    <b></b>
+                </dt>
+                <dd>
+                	<div class="prompt">
+                    	<div class="loading">扩展功能，有待完善</div>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <%
+    List<SuperType> supTypes = (List<SuperType>)session.getAttribute("supTypes");
+    if (supTypes == null) {
+    	supTypes = new TypeService().loadAllType();
+    	session.setAttribute("supTypes",supTypes);
+    }
+     %>
+    <div class="w">
+    	<div id="nav">
+        	<div class="hover" id="categorys">
+            	<div class="mt ld">
+                	<h2>
+                    	<span>全部商品分类</span>
+                        <b></b>
+                    </h2>
+                </div>
+                <div class="mc" id="product-classify">
+                	<!-- 列表项循环开始 -->
+                	<c:forEach items="${sessionScope.supTypes }" var="supType">
+                	<div class="item">
+                    	<span>
+                        	<h3 class="i-classify">
+                            	${supType.typename }
+                         	</h3>
+                            <s></s>
+                        </span>
+                        <div class="i-mc">
+                        	<div class="subItem">
+                            	<ul>
+                                	<!-- 子列表项循环开始 -->
+                                	<c:if test="${fn:length(supType.subtypes) == 0 }">
+                                		<li>暂无</li>
+                                	</c:if>
+                                	<c:if test="${fn:length(supType.subtypes) > 0 }">
+	                                	<c:forEach items="${supType.subtypes }" var="subType">
+	                                	<li><a href="shopping/ProductListServlet?subtype=${subType.subtypeid }">${subType.subtypename }</a></li>
+	                                	</c:forEach>
+                                	</c:if>
+                                    <!-- 子列表项循环结束 -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    </c:forEach>
+                    <!-- 列表项结束 -->
+                </div>
+            </div>
+            <div id="nav-r"></div>
+            <ul id="navitems">
+            	<li class="curr" id="nav-home">
+                	<a href="#">首页</a>
+                </li>
+                <li id="nav-mall">
+                	<a href="#">服装城</a>
+                </li>
+                <li id="nav-tuan">
+                	<a href="#">团购</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 头部end -->
+<!-- 广告begin -->
+<div class="ad w">
+	<div class="slide" id="slide">
+    	<div class="slide-img">
+        	<ul>
+            	<!-- 幻灯片列表begin -->
+            	<%
+            	AdvService advService = new AdvService();
+            	List<Adv> advs = advService.getHomeSlideAdv();
+            	for (int i = 0; i < advs.size(); i++) {
+            		if (i == 0) {
+            	%>
+            			<li><a href="page/shopping/productDetail.jsp?proid=<%=advs.get(i).getProductid() %>"><img src="<%=IConstant.IMG_PATH + advs.get(i).getPicture() %>" /></a></li>
+            	<%
+            		} else {
+            	%>
+            			<li class="hid"><a href="page/shopping/productDetail.jsp?proid=<%=advs.get(i).getProductid() %>"><img src="<%=IConstant.IMG_PATH + advs.get(i).getPicture() %>" /></a></li>
+            	<%
+            		}
+            	}
+            	 %>
+                <!-- 幻灯片列表end -->
+            </ul>
+        </div>
+        <div class="slide-control">
+       		<%
+       		for (int i = 0; i < advs.size(); i++) {
+           		if (i == 0) {
+           	%>
+           			<span class="curr"><%=i+1 %></span>
+           	<%
+           		} else {
+           	%>
+           			<span class=""><%=i+1 %></span>
+           	<%
+           		}
+           	}
+           	 %>
+        </div>
+    </div>
+	<script type="text/javascript" language="javascript">
+		var img_count = <%=advs.size() %>;//图片总数
+		var curr_i = 0;//当前图片下标
+		var slideTimer;//定时器
+		var slide_ms = 4000;//时间间隔
+		//替换图片函数
+		function slide_replace(curr_control){
+			$(".slide .slide-control span").each(function(){
+				$(this).removeClass("curr");	
+			});
+			curr_control.addClass("curr");
+			$(".slide .slide-img ul li[class!='hid']").fadeOut(500,function(){
+				$(".slide .slide-img ul li[class!='hid']").addClass("hid");
+				$($(".slide .slide-img ul li")[curr_i]).show();
+				$($(".slide .slide-img ul li")[curr_i]).removeClass();
+			});
+		}
+		//图片轮换函数
+		function img_scroll(){
+			if(++curr_i >= img_count){
+				curr_i = 0;
+			}
+			slide_replace($($(".slide .slide-control span")[curr_i]));
+		}
+		//开始效果
+		function scroll_start(){
+			slideTimer = setInterval(img_scroll,slide_ms);
+		}
+		//停止效果
+		function scroll_stop(){
+			clearInterval(slideTimer);
+		}
+		//幻灯片控制器：鼠标悬停事件
+        $(".slide .slide-control span").mouseover(function(){
+			scroll_stop();
+			var i = $(this).html() - 1;
+			if(i != curr_i){
+				curr_i = i;
+				slide_replace($(this));
+			}
+		});
+		//幻灯片控制器：鼠标移出事件
+		$(".slide .slide-control span").mouseout(function(){
+			scroll_start();
+		});
+		//幻灯片图片：鼠标悬停事件
+		$(".slide .slide-img ul li").mouseover(function(){
+			scroll_stop();
+		});
+		//幻灯片图片：鼠标移出事件
+		$(".slide .slide-img ul li").mouseout(function(){
+			scroll_start();
+		});
+		scroll_start();
+    </script>
+    <div class="ad_img1"><a href=""><img src="images/ad_1.jpg" width="310" height="85" /></a></div>
+    <div class="ad_img2"><a href=""><img src="images/ad_2.jpg" width="310" height="85" /></a></div>
+    <div class="ad_img2"><a href=""><img src="images/ad_3.jpg" width="310" height="85" /></a></div>
+    <div class="clr"></div>
+</div>
+<!-- 广告end -->
+<%
+ProductService proSvc = new ProductService();
+List<SuperType> types = proSvc.getSuperTypeAndProducts();
+if(types != null && types.size() > 0) {
+	request.setAttribute("typeAndPro",types);
+}
+ %>
+<c:if test="${requestScope.typeAndPro != null }">
+	<c:forEach items="${requestScope.typeAndPro }" var="sprType">
+	<div class="w w1">
+		<div class="m m2" id="timed">
+			<div class="mt">
+				<h2>${sprType.typename }</h2>
+				<div class="extra"></div>
+			</div>
+			<div class="mc">
+				<ul class="lh">
+					<c:if test="${sprType.products != null }">
+						<c:forEach items="${sprType.products }" var="newPro" varStatus="p_i">
+						<li id="timed1">
+		                  <div class="countdown" id="timer36"><span  style="color:rgb(204, 0, 0); font-weight: bold; font-size: 15px;"><a href="page/shopping/productDetail.jsp?proid=${newPro.productid }">${newPro.productname }</a></span></div>
+		                  <div class="p-img ld"><a href="page/shopping/productDetail.jsp?proid=${newPro.productid }"><img width="130px" height="130px" src="<%=IConstant.IMG_PATH + ((Product)pageContext.getAttribute("newPro")).getPicture() %>"/></a></div>
+		                  <div class="p-name">${newPro.introduce }</div>
+		                  <div class="p-price">极目价：<span  style="color:rgb(204, 0, 0); font-weight: bold; font-size: 16px;">￥<fmt:formatNumber value="${newPro.nowprice }" pattern=".00"></fmt:formatNumber><%--<%=new DecimalFormat(".00").format(((Product)pageContext.getAttribute("newPro")).getNowprice()) %> --%></span></div>
+						</li>
+						<%--保存循环次数，用于不足5个商品时的显示 --%>
+						<c:set var="count" value="${p_i.count}" scope="page"/>
+						</c:forEach>
+						<%-- 如果不足5个商品，则显示暂无  --%>
+						<c:forEach begin="${pageScope.count != null ? pageScope.count + 1 : 1 }" end="5">
+						<li id="timed1">
+		                  <div class="countdown" id="timer36"><span style="color:#999; font-weight: bold; font-size: 15px;">暂无</span></div>
+		                  <div class="p-img ld"></div>
+		                  <div class="p-name"></div>
+		                  <div class="p-price"></div>
+						</li>
+						</c:forEach>
+					</c:if>
+					<c:remove var="count" scope="page" />
+				</ul>
+			</div>
+		</div><!--timed end-->
+		<div class="m ranking">
+	    	<div class="sm sm3">
+	        	<div class="smt">${sprType.typename }销售排行</div>
+	            <div class="smc">
+	            	<ul>
+	            	<c:if test="${sprType.saleTopProducts != null }">
+						<c:forEach items="${sprType.saleTopProducts }" var="salePro" varStatus="p_i">
+	                	<li>
+	                		<c:if test="${p_i.count <= 3 }">
+	                    		<span style="color:rgb(204,0,0);">${p_i.count }</span>
+	                    	</c:if>
+	                    	<c:if test="${p_i.count > 3 }">
+	                    		<span style="color:#999;">${p_i.count }</span>
+	                    	</c:if>
+	                        <div class="p-name">
+	                        	<a href="page/shopping/productDetail.jsp?proid=${salePro.productid }">${salePro.productname }</a>
+	                        </div>
+	                        <div class="p-price">￥<fmt:formatNumber value="${salePro.nowprice }" pattern=".00"></fmt:formatNumber><%-- <%=new DecimalFormat(".00").format(((Product)pageContext.getAttribute("salePro")).getNowprice()) %>--%></div>
+	                    </li>
+	                	</c:forEach>
+					</c:if>
+	                </ul>
+	            </div>
+	        </div>
+	    </div>
+		<!--group end-->
+		<span class="clr"></span>
+	</div>
+	</c:forEach>
+</c:if>
+<%@ include file="../common/o_foot.jsp" %>
+  </body>
+</html>

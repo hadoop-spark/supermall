@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>supermall</display-name>
+   <welcome-file-list>
+    <welcome-file>admin/index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>commodityClassServlet</servlet-name>
+    <servlet-class>com.servlet.commodityClass.commodityClassServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>commodityServlet</servlet-name>
+    <servlet-class>com.servlet.commodity.commodityServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>commodityType</servlet-name>
+    <servlet-class>com.servlet.commodityType.commodityType</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>productToCart</servlet-name>
+    <servlet-class>com.servlet.productToCart</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>RandomValidateCode</servlet-name>
+    <servlet-class>com.servlet.RandomValidateCode</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>UserServlet</servlet-name>
+    <servlet-class>com.servlet.user.UserServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>AdminServlet</servlet-name>
+    <servlet-class>com.servlet.admin.AdminServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>OrderInfoServlet</servlet-name>
+    <servlet-class>com.servlet.OrderInfoServlet</servlet-class>
+  </servlet>
+
+
+
+
+
+
+
+  <servlet-mapping>
+    <servlet-name>commodityClassServlet</servlet-name>
+    <url-pattern>/servlet/commodityClassServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>commodityServlet</servlet-name>
+    <url-pattern>/servlet/commodityServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>commodityType</servlet-name>
+    <url-pattern>/servlet/commodityType</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>productToCart</servlet-name>
+    <url-pattern>/servlet/productToCart</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>RandomValidateCode</servlet-name>
+    <url-pattern>/servlet/RandomValidateCode</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UserServlet</servlet-name>
+    <url-pattern>/servlet/UserServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminServlet</servlet-name>
+    <url-pattern>/servlet/AdminServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>OrderInfoServlet</servlet-name>
+    <url-pattern>/servlet/OrderInfoServlet</url-pattern>
+  </servlet-mapping>
+
+ <filter>
+      <filter-name>MyFilter</filter-name>
+      <filter-class>com.filter.MyFilter</filter-class>
+ </filter>
+<filter-mapping>
+	<filter-name>MyFilter</filter-name>
+	 <url-pattern>/index.jsp</url-pattern>
+</filter-mapping>
+
+<filter>
+      <filter-name>LoginFilter</filter-name>
+      <filter-class>com.filter.LoginFilter</filter-class>
+ </filter>
+<filter-mapping>
+	<filter-name>LoginFilter</filter-name>
+	 <url-pattern>/shop/page/shopping/settle_accounts.jsp</url-pattern>
+</filter-mapping>
+
+<filter>
+      <filter-name>AdminFilter</filter-name>
+      <filter-class>com.filter.AdminFilter</filter-class>
+ </filter>
+<filter-mapping>
+	<filter-name>AdminFilter</filter-name>
+	 <url-pattern>/admin/*</url-pattern>
+</filter-mapping>
+ 
+</web-app>
