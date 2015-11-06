@@ -5,7 +5,11 @@ import java.sql.Connection;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
-
+/**
+ * 
+ * @author HadoopTyy
+ *
+ */
 public class getConnectionFactory {
 	private static ThreadLocal<Connection> connThread= new ThreadLocal<Connection>();
 	public static Connection getConnection()
