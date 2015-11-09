@@ -21,6 +21,9 @@ import com.entity.OrderItem;
 import com.entity.ShoppingItem;
 import com.service.OrderInfoBiz;
 
+/**
+ * sssssssssssssssss
+ */
 public class OrderInfoServlet extends HttpServlet {
 	
 	private OrderInfoBiz orderInfoBiz=null;
